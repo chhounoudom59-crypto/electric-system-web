@@ -60,7 +60,9 @@ export default function VerifyOTPPage() {
       })
       if (response.ok) {
         const data = await response.json()
-        localStorage.setItem("authToken", data.access)
+        localStorage.setItem("accessToken", data.access)
+        localStorage.setItem("refreshToken", data.refresh || "")
+        localStorage.setItem("user", JSON.stringify(data.user || {}))
         router.push("/products")
       } else {
         const errData = await response.json()

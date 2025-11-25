@@ -19,7 +19,7 @@ export default function ProductManagementPage() {
 
   const fetchProducts = async () => {
     try {
-      const token = localStorage.getItem("authToken")
+      const token = localStorage.getItem("accessToken")
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -36,7 +36,7 @@ export default function ProductManagementPage() {
 
   const handleAddProduct = async () => {
     try {
-      const token = localStorage.getItem("authToken")
+      const token = localStorage.getItem("accessToken")
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/`, {
         method: "POST",
         headers: {

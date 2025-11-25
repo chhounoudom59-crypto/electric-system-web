@@ -21,11 +21,15 @@ export function ShopHeader() {
   const cartItemsCount = getTotalItems()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
+    const token = localStorage.getItem("accessToken")
+    setIsLoggedIn(!!token)
+    
     const handleScroll = () => {
       setScrolled(window.scrollY > 10)
     }
@@ -135,16 +139,38 @@ export function ShopHeader() {
                   )}
                 </Button>
               </Link>
-              <Link href="/profile">
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-primary/10">
-                  <User className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/login" className="hidden sm:block ml-2">
-                <Button size="sm" className="rounded-full px-5 font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
-                  Sign In
-                </Button>
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <div className="relative group">
+                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-primary/10">
+                      <User className="h-5 w-5" />
+                    </Button>
+                    <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200 z-50 border border-border">
+                      <Link href="/profile" className="block px-4 py-2.5 hover:bg-muted rounded-t-lg text-sm font-medium">
+                        My Profile
+                      </Link>
+                      <Link href="/orders" className="block px-4 py-2.5 hover:bg-muted text-sm font-medium">
+                        My Orders
+                      </Link>
+                      <button onClick={() => {
+                        localStorage.removeItem("accessToken")
+                        localStorage.removeItem("refreshToken")
+                        localStorage.removeItem("user")
+                        setIsLoggedIn(false)
+                        router.push("/")
+                      }} className="w-full text-left px-4 py-2.5 hover:bg-muted rounded-b-lg text-red-600 text-sm font-medium">
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <Link href="/login" className="hidden sm:block ml-2">
+                  <Button size="sm" className="rounded-full px-5 font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </nav>
           </div>
 
