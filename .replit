@@ -61,3 +61,8 @@ externalPort = 8000
 [[ports]]
 localPort = 33603
 externalPort = 3000
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["bash", "-c", "cd backend && python manage.py runserver 0.0.0.0:8000 & cd Frontend && npm start"]
+build = ["bash", "-c", "cd Frontend && npm install && npm run build"]
