@@ -53,10 +53,12 @@ export default function VerifyOTPPage() {
     }
     setLoading(true)
     try {
+      // Normalize phone number to match backend (remove spaces)
+      const normalizedPhone = phone.replace(/\s/g, "")
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/verify-phone-otp/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone_number: phone, code: otp }),
+        body: JSON.stringify({ phone_number: normalizedPhone, code: otp }),
       })
       if (response.ok) {
         const data = await response.json()
