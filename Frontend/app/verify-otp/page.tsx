@@ -61,7 +61,7 @@ export default function VerifyOTPPage() {
       if (response.ok) {
         const data = await response.json()
         localStorage.setItem("authToken", data.access)
-        router.push("/profile")
+        router.push("/products")
       } else {
         const errData = await response.json()
         setError(errData.detail || "Invalid OTP")
