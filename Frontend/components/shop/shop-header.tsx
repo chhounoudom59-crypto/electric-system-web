@@ -7,7 +7,7 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ShoppingBag, Heart, ShoppingCart, User, Search } from "lucide-react"
+import { Heart, ShoppingCart, User, Search, Menu, X, ChevronDown, Zap } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useFavorites } from "@/hooks/use-favorites"
 import { useCart } from "@/hooks/use-cart"
@@ -19,27 +19,29 @@ export function ShopHeader() {
   const { favorites } = useFavorites()
   const { getTotalItems } = useCart()
   const cartItemsCount = getTotalItems()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Initialize input from URL once, and remove URL search param when input is cleared
   useEffect(() => {
     const param = searchParams?.get("search") ?? ""
-    // Initialize only if query exists in URL and input is empty (avoid overwriting user typing)
     if (param && searchQuery === "") {
       setSearchQuery(param)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
 
   useEffect(() => {
-    // When user clears the search input, remove the `search` query param from URL
     if (searchQuery.trim() === "" && searchParams?.get("search")) {
-      // replace to avoid adding extra history entries
       router.replace("/products")
     }
   }, [searchQuery, searchParams, router])
@@ -51,90 +53,148 @@ export function ShopHeader() {
     }
   }
 
+  const categories = [
+    { name: "All Products", href: "/products", featured: true },
+    { name: "Smartphones", href: "/products?category=Smartphones" },
+    { name: "Laptops", href: "/products?category=Laptops" },
+    { name: "Headphones", href: "/products?category=Headphones" },
+    { name: "Cameras", href: "/products?category=Cameras" },
+    { name: "Accessories", href: "/products?category=Accessories" },
+  ]
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-      <div className="container mx-auto px-4">
-        {/* Top Bar */}
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <ShoppingBag className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-foreground">ElectroStore</span>
-          </Link>
+    <>
+      <div className="bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground">
+        <div className="container mx-auto px-4">
+          <div className="flex h-9 items-center justify-center text-xs sm:text-sm font-medium">
+            <Zap className="mr-2 h-3.5 w-3.5 animate-pulse" />
+            <span>Free Express Shipping on orders over $199</span>
+            <span className="mx-3 hidden sm:inline">|</span>
+            <span className="hidden sm:inline">30-Day Easy Returns</span>
+          </div>
+        </div>
+      </div>
 
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="hidden flex-1 max-w-xl mx-8 md:block">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search products..."
-                className="pl-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+      <header className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled 
+          ? "bg-background/95 backdrop-blur-xl shadow-lg border-b border-border/50" 
+          : "bg-background border-b border-border"
+      }`}>
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <button
+                className="lg:hidden p-2 -ml-2"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+              
+              <Link href="/" className="flex items-center gap-2.5 group">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow">
+                  <Zap className="h-5 w-5" />
+                </div>
+                <div className="hidden sm:block">
+                  <span className="text-xl font-bold tracking-tight text-foreground">
+                    Electro<span className="text-primary">Store</span>
+                  </span>
+                </div>
+              </Link>
             </div>
-          </form>
 
-          {/* Actions */}
-          <nav className="flex items-center gap-2">
-            <Link href="/favorites">
-              <Button variant="ghost" size="icon" className="relative">
-                <Heart className="h-5 w-5" />
-                {favorites.length > 0 && (
-                  <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center">
-                    {favorites.length}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
-            <Link href="/cart">
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingCart className="h-5 w-5" />
-                {cartItemsCount > 0 && (
-                  <Badge className="absolute -right-1 -top-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center">
-                    {cartItemsCount}
-                  </Badge>
-                )}
-              </Button>
-            </Link>
-            <Link href="/profile">
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-              </Button>
-            </Link>
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl">
+              <div className="relative w-full">
+                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search for products, brands, and more..."
+                  className="w-full pl-11 pr-4 h-11 rounded-full border-2 border-muted bg-muted/50 focus:bg-background focus:border-primary/50 transition-all"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </form>
+
+            <nav className="flex items-center gap-1">
+              <Link href="/favorites">
+                <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full hover:bg-primary/10">
+                  <Heart className="h-5 w-5" />
+                  {mounted && favorites.length > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-lg">
+                      {favorites.length}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+              <Link href="/cart">
+                <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full hover:bg-primary/10">
+                  <ShoppingCart className="h-5 w-5" />
+                  {mounted && cartItemsCount > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-lg">
+                      {cartItemsCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+              <Link href="/profile">
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full hover:bg-primary/10">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/login" className="hidden sm:block ml-2">
+                <Button size="sm" className="rounded-full px-5 font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
+                  Sign In
+                </Button>
+              </Link>
+            </nav>
+          </div>
+
+          <nav className="hidden lg:flex h-12 items-center gap-1 -mb-px">
+            {categories.map((category) => (
+              <Link
+                key={category.name}
+                href={category.href}
+                className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
+                  category.featured
+                    ? "text-primary hover:bg-primary/10"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                }`}
+              >
+                {category.name}
+              </Link>
+            ))}
           </nav>
         </div>
 
-        {/* Navigation Links */}
-        <div className="flex h-12 items-center gap-6 text-sm">
-          <Link href="/products" className="font-medium text-foreground hover:text-primary transition-colors">
-            All Products
-          </Link>
-          <Link
-            href="/products?category=Smartphones"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Smartphones
-          </Link>
-          <Link
-            href="/products?category=Laptops"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Laptops
-          </Link>
-          <Link
-            href="/products?category=Headphones"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Headphones
-          </Link>
-          <Link
-            href="/products?category=Cameras"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Cameras
-          </Link>
-        </div>
-      </div>
-    </header>
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t border-border bg-background">
+            <div className="container mx-auto px-4 py-4">
+              <form onSubmit={handleSearch} className="mb-4">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="Search products..."
+                    className="w-full pl-11 h-11 rounded-full"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </form>
+              <nav className="flex flex-col gap-1">
+                {categories.map((category) => (
+                  <Link
+                    key={category.name}
+                    href={category.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-4 py-3 text-sm font-medium rounded-lg hover:bg-muted transition-colors"
+                  >
+                    {category.name}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          </div>
+        )}
+      </header>
+    </>
   )
 }

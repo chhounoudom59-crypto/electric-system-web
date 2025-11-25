@@ -102,18 +102,17 @@ export function ProductList() {
     <div className="container mx-auto px-4 py-8">
       <PromotionalSlider />
 
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Products</h1>
-          <p className="text-muted-foreground mt-1">
-            Showing {filteredProducts.length} of {products.length} products
+          <h1 className="text-3xl font-bold text-foreground">All Products</h1>
+          <p className="text-muted-foreground mt-2">
+            Showing <span className="font-semibold text-foreground">{filteredProducts.length}</span> of {products.length} products
           </p>
         </div>
 
-        {/* Mobile Filter Button */}
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="outline" className="md:hidden gap-2 bg-transparent">
+            <Button variant="outline" className="md:hidden gap-2 rounded-full">
               <SlidersHorizontal className="h-4 w-4" />
               Filters
             </Button>
@@ -131,21 +130,20 @@ export function ProductList() {
       </div>
 
       <div className="flex gap-8">
-        {/* Desktop Filters Sidebar */}
-        <aside className="hidden md:block w-64 flex-shrink-0">
-          <div className="sticky top-32">
+        <aside className="hidden md:block w-72 flex-shrink-0">
+          <div className="sticky top-36 bg-card rounded-2xl border border-border p-6">
+            <h2 className="font-semibold text-lg mb-4">Filters</h2>
             <ProductFilters {...filterProps} />
           </div>
         </aside>
 
-        {/* Product Grid */}
         <div className="flex-1">
           {filteredProducts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg">No products found matching your filters.</p>
+            <div className="text-center py-20 bg-muted/30 rounded-2xl">
+              <p className="text-muted-foreground text-lg mb-4">No products found matching your filters.</p>
               <Button
                 variant="outline"
-                className="mt-4 bg-transparent"
+                className="rounded-full"
                 onClick={() => {
                   setSelectedCategory("All Categories")
                   setSelectedBrand("All Brands")
@@ -153,11 +151,11 @@ export function ProductList() {
                   setShowInStockOnly(false)
                 }}
               >
-                Clear Filters
+                Clear All Filters
               </Button>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
