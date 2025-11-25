@@ -112,3 +112,29 @@ class Favorite(models.Model):
 
     class Meta:
         unique_together = ('user', 'product')
+
+
+class ProductRelation(models.Model):
+    RELATION_TYPES = [
+        ('related', 'Related Products'),
+        ('accessory', 'Accessories'),
+        ('bundle', 'Bundle'),
+    ]
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='relations')
+    related_product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='related_to')
+    relation_type = models.CharField(max_length=20, choices=RELATION_TYPES)
+    
+    class Meta:
+        unique_together = ('product', 'related_product')
+
+
+class ProductSales(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='sales_history')
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, related_name='sales_history', null=True, blank=True)
+    sale_date = models.DateField()
+    quantity_sold = models.PositiveIntegerField()
+    revenue = models.DecimalField(max_digits=12, decimal_places=2)
+    
+    class Meta:
+        unique_together = ('product', 'variant', 'sale_date')
+        indexes = [models.Index(fields=['sale_date'])]

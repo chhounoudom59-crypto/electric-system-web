@@ -1,10 +1,20 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
+from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils import timezone
 from datetime import timedelta
+
+
+class UserRole(models.Model):
+    ROLES = [
+        ('admin', 'Admin'),
+        ('customer', 'Customer'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='role')
+    role = models.CharField(max_length=20, choices=ROLES, default='customer')
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.get_role_display()}"
 
 
 class UserProfile(models.Model):
