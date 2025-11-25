@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-_0w0pd2mon&drk%ifnfn)+qt-$1ox&ag-!rk*c*w5*4l&dndo8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -99,15 +99,8 @@ REST_FRAMEWORK = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'electric_store1',
-        'USER': 'estore',
-        'PASSWORD': 'StrongPassword!23',  # or whatever you set
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
