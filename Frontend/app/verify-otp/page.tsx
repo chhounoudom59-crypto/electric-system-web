@@ -12,8 +12,10 @@ import { useRouter } from "next/navigation"
 export default function VerifyOTPPage() {
   const [phone, setPhone] = useState("")
   const [otp, setOtp] = useState("")
+  const [otpSent, setOtpSent] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [demoOtp, setDemoOtp] = useState("")
   const router = useRouter()
 
   const handleSendOTP = async () => {
@@ -30,7 +32,9 @@ export default function VerifyOTPPage() {
       })
       if (response.ok) {
         const data = await response.json()
-        alert(`OTP sent! (Demo: ${data.dev_otp})`)
+        setDemoOtp(data.dev_otp)
+        setOtpSent(true)
+        setError("")
       } else {
         setError("Failed to send OTP")
       }
@@ -72,78 +76,95 @@ export default function VerifyOTPPage() {
     <div className="min-h-screen bg-background">
       <ShopHeader />
       <main className="container mx-auto px-4 py-12">
-        <Link href="/login" className="flex items-center gap-2 text-primary hover:underline mb-8">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Login
-        </Link>
+        <div className="grid gap-8 md:grid-cols-2 items-center max-w-4xl mx-auto">
+          <div className="hidden md:block relative h-96 rounded-2xl overflow-hidden">
+            <Image
+              src="/checkout_page_design.png"
+              alt="Secure verification"
+              fill
+              className="object-cover"
+            />
+          </div>
 
-        <div className="max-w-md mx-auto">
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="text-center space-y-3">
-              <div className="flex justify-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <Smartphone className="h-8 w-8 text-primary" />
+          <div>
+            <Link href="/login" className="flex items-center gap-2 text-primary hover:underline mb-8">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Login
+            </Link>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader className="text-center space-y-3">
+                <div className="flex justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                    <Smartphone className="h-8 w-8 text-primary" />
+                  </div>
                 </div>
-              </div>
-              <CardTitle className="text-2xl">Verify Your Phone</CardTitle>
-              <CardDescription>
-                Enter your phone number and we'll send you a 6-digit OTP
-              </CardDescription>
-            </CardHeader>
+                <CardTitle className="text-2xl">Verify Your Phone</CardTitle>
+                <CardDescription>
+                  Enter your phone number and we'll send you a 6-digit OTP
+                </CardDescription>
+              </CardHeader>
 
-            <CardContent className="space-y-6">
-              {error && (
-                <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm">
-                  {error}
-                </div>
-              )}
+              <CardContent className="space-y-6">
+                {error && (
+                  <div className="p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Phone Number</label>
-                <Input
-                  type="tel"
-                  placeholder="+855 9x xxx xxxx"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  disabled={loading}
-                  className="h-12"
-                />
-                <Button
-                  onClick={handleSendOTP}
-                  disabled={loading}
-                  className="w-full h-12 rounded-full"
-                >
-                  {loading ? "Sending..." : "Send OTP"}
-                </Button>
-              </div>
+                {demoOtp && otpSent && (
+                  <div className="p-3 bg-blue-50 text-blue-600 rounded-lg text-sm font-mono">
+                    Demo OTP: {demoOtp}
+                  </div>
+                )}
 
-              {phone && (
-                <div className="space-y-2 pt-4 border-t">
-                  <label className="text-sm font-medium">Enter 6-Digit OTP</label>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Phone Number</label>
                   <Input
-                    type="text"
-                    placeholder="000000"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value.slice(0, 6))}
-                    disabled={loading}
-                    maxLength={6}
-                    className="h-12 text-center text-2xl tracking-widest font-mono"
+                    type="tel"
+                    placeholder="+855 9x xxx xxxx"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    disabled={loading || otpSent}
+                    className="h-12"
                   />
                   <Button
-                    onClick={handleVerifyOTP}
-                    disabled={loading || otp.length !== 6}
+                    onClick={handleSendOTP}
+                    disabled={loading || otpSent}
                     className="w-full h-12 rounded-full"
                   >
-                    {loading ? "Verifying..." : "Verify & Login"}
+                    {loading ? "Sending..." : otpSent ? "OTP Sent ✓" : "Send OTP"}
                   </Button>
                 </div>
-              )}
 
-              <p className="text-xs text-center text-muted-foreground pt-2">
-                Your information is secure. We never share your data.
-              </p>
-            </CardContent>
-          </Card>
+                {otpSent && (
+                  <div className="space-y-2 pt-4 border-t">
+                    <label className="text-sm font-medium">Enter 6-Digit OTP</label>
+                    <Input
+                      type="text"
+                      placeholder="000000"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.slice(0, 6))}
+                      disabled={loading}
+                      maxLength={6}
+                      className="h-12 text-center text-2xl tracking-widest font-mono"
+                    />
+                    <Button
+                      onClick={handleVerifyOTP}
+                      disabled={loading || otp.length !== 6}
+                      className="w-full h-12 rounded-full"
+                    >
+                      {loading ? "Verifying..." : "Verify & Login"}
+                    </Button>
+                  </div>
+                )}
+
+                <p className="text-xs text-center text-muted-foreground pt-2">
+                  Your information is secure. We never share your data.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </main>
     </div>

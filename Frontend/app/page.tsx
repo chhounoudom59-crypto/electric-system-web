@@ -85,58 +85,14 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="relative">
-                <div className="relative z-10">
-                  <Card className="overflow-hidden border-0 bg-gradient-to-br from-slate-900 to-slate-800 shadow-2xl">
-                    <CardContent className="relative p-8">
-                      <div className="absolute top-4 right-4 flex items-center gap-1 rounded-full bg-red-500 px-3 py-1 text-xs font-bold text-white">
-                        <Timer className="h-3 w-3" />
-                        Limited Offer
-                      </div>
-                      
-                      <div className="space-y-4 text-white">
-                        <p className="text-sm font-medium uppercase tracking-wider text-primary-foreground/70">Featured Device</p>
-                        <h2 className="text-3xl font-bold">iPhone 16 Pro Max</h2>
-                        <p className="text-sm text-slate-300">
-                          Titanium design, Pro camera system, and all-day battery life.
-                        </p>
-                        
-                        <div className="flex items-center gap-1 text-yellow-400">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} className="h-4 w-4 fill-current" />
-                          ))}
-                          <span className="ml-2 text-sm text-slate-300">(2,847 reviews)</span>
-                        </div>
-                        
-                        <div className="flex items-baseline gap-3 pt-2">
-                          <span className="text-4xl font-bold">$1,199</span>
-                          <span className="text-lg text-slate-400 line-through">$1,299</span>
-                          <span className="rounded-full bg-green-500/20 px-2 py-1 text-xs font-semibold text-green-400">
-                            Save $100
-                          </span>
-                        </div>
-                        
-                        <Link href="/products" className="block pt-4">
-                          <Button className="w-full h-12 rounded-full bg-white text-slate-900 hover:bg-slate-100 font-semibold">
-                            Shop Now
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                          </Button>
-                        </Link>
-                      </div>
-
-                      <div className="absolute -right-10 -bottom-10 w-64 h-64">
-                        <Image
-                          src="/iPhone_16_Pro_Max_Natural_Titanium.webp"
-                          alt="iPhone 16 Pro Max"
-                          fill
-                          className="object-contain drop-shadow-2xl animate-float"
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                
-                <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl opacity-60" />
+              <div className="relative h-96">
+                <Image
+                  src="/smartphone_product_showcase.png"
+                  alt="Featured smartphone"
+                  fill
+                  className="object-cover rounded-2xl shadow-2xl"
+                  priority
+                />
               </div>
             </div>
           </div>
@@ -228,27 +184,48 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
-              <ImageShowcaseCard
-                title="Premium Smartphones"
-                description="Latest flagship phones with cutting-edge technology"
-                image="/iPhone_16_Pro_Max_Natural_Titanium.webp"
-                bgGradient="from-blue-500/20 to-cyan-500/10"
-                href="/products?category=Smartphones"
-              />
-              <ImageShowcaseCard
-                title="High Performance Laptops"
-                description="Powerful laptops for work, gaming, and creation"
-                image="/placeholder.svg"
-                bgGradient="from-purple-500/20 to-pink-500/10"
-                href="/products?category=Laptops"
-              />
-              <ImageShowcaseCard
-                title="Premium Audio"
-                description="Crystal clear sound with noise cancellation"
-                image="/placeholder.svg"
-                bgGradient="from-green-500/20 to-emerald-500/10"
-                href="/products?category=Headphones"
-              />
+              <Link href="/products?category=Smartphones" className="relative h-80 rounded-2xl overflow-hidden group cursor-pointer hover-lift">
+                <Image
+                  src="/smartphone_product_showcase.png"
+                  alt="Premium Smartphones"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+                  <h3 className="text-2xl font-bold mb-2">Premium Smartphones</h3>
+                  <p className="text-sm mb-3">Latest flagship phones with cutting-edge technology</p>
+                  <Button className="w-fit rounded-full">Shop Now</Button>
+                </div>
+              </Link>
+              <Link href="/products?category=Laptops" className="relative h-80 rounded-2xl overflow-hidden group cursor-pointer hover-lift">
+                <Image
+                  src="/laptop_product_showcase.png"
+                  alt="High Performance Laptops"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+                  <h3 className="text-2xl font-bold mb-2">High Performance Laptops</h3>
+                  <p className="text-sm mb-3">Powerful laptops for work, gaming, and creation</p>
+                  <Button className="w-fit rounded-full">Shop Now</Button>
+                </div>
+              </Link>
+              <Link href="/products?category=Headphones" className="relative h-80 rounded-2xl overflow-hidden group cursor-pointer hover-lift">
+                <Image
+                  src="/audio_products_showcase.png"
+                  alt="Premium Audio"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-all" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end text-white">
+                  <h3 className="text-2xl font-bold mb-2">Premium Audio</h3>
+                  <p className="text-sm mb-3">Crystal clear sound with noise cancellation</p>
+                  <Button className="w-fit rounded-full">Shop Now</Button>
+                </div>
+              </Link>
             </div>
           </div>
         </section>
@@ -289,48 +266,28 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="py-16 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-3xl mx-4 md:mx-auto md:container">
-          <div className="container mx-auto px-4">
-            <div className="grid gap-12 md:grid-cols-2 items-center">
-              <div className="space-y-6">
+        <section className="py-16 rounded-3xl overflow-hidden">
+          <div className="relative h-96 w-full">
+            <Image
+              src="/electronic_store_hero_banner.png"
+              alt="Tech That Matters"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 container mx-auto px-4 flex items-center">
+              <div className="max-w-lg space-y-6 text-white">
                 <h2 className="text-4xl font-bold leading-tight">Tech That Matters</h2>
-                <p className="text-lg text-white/80">
-                  From cutting-edge smartphones to powerful laptops, we bring you the latest innovations in electronics. 
-                  Every product is carefully selected and tested for quality.
+                <p className="text-lg text-white/90">
+                  Premium electronics curated for you. Every product tested for quality and performance.
                 </p>
-                <div className="flex flex-wrap gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary"></div>
-                    <span>Premium Quality</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary"></div>
-                    <span>Best Warranties</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary"></div>
-                    <span>Expert Service</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary"></div>
-                    <span>Great Prices</span>
-                  </div>
-                </div>
                 <Link href="/products">
                   <Button className="h-12 px-8 rounded-full bg-white text-slate-900 hover:bg-white/90 font-semibold">
                     Explore Now
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-              </div>
-              <div className="relative h-80 hidden md:block">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-2xl blur-3xl"></div>
-                <Image
-                  src="/iPhone_16_Pro_Max_Natural_Titanium.webp"
-                  alt="Featured tech"
-                  fill
-                  className="object-contain drop-shadow-2xl relative z-10"
-                />
               </div>
             </div>
           </div>

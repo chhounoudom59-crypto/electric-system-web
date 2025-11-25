@@ -36,9 +36,20 @@ export default function AdminDashboardPage() {
     <div className="min-h-screen bg-background">
       <ShopHeader />
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Manage your store operations</p>
+        <div className="relative h-48 -mx-4 mb-8 rounded-lg overflow-hidden">
+          <Image
+            src="/admin_dashboard_mockup.png"
+            alt="Dashboard"
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center px-4">
+            <div className="text-white">
+              <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
+              <p className="text-lg text-white/80">Manage your store operations with powerful analytics</p>
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
