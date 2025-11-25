@@ -114,8 +114,10 @@ export default function VerifyOTPPage() {
                 )}
 
                 {demoOtp && otpSent && (
-                  <div className="p-3 bg-blue-50 text-blue-600 rounded-lg text-sm font-mono">
-                    Demo OTP: {demoOtp}
+                  <div className="p-4 bg-green-50 text-green-700 rounded-lg text-center border-2 border-green-200">
+                    <p className="text-xs font-semibold mb-2">Your OTP Code (for testing):</p>
+                    <p className="text-3xl font-bold font-mono tracking-widest">{demoOtp}</p>
+                    <p className="text-xs mt-2">Use this code below to verify</p>
                   </div>
                 )}
 
