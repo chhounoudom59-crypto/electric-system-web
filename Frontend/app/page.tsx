@@ -220,6 +220,122 @@ export default function HomePage() {
           </div>
         </section>
 
+        <section className="py-16 bg-gradient-to-b from-background to-muted/20">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-foreground mb-3">Featured Collections</h2>
+              <p className="text-muted-foreground text-lg">Curated selections of the best electronics</p>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-3">
+              <ImageShowcaseCard
+                title="Premium Smartphones"
+                description="Latest flagship phones with cutting-edge technology"
+                image="/iPhone_16_Pro_Max_Natural_Titanium.webp"
+                bgGradient="from-blue-500/20 to-cyan-500/10"
+                href="/products?category=Smartphones"
+              />
+              <ImageShowcaseCard
+                title="High Performance Laptops"
+                description="Powerful laptops for work, gaming, and creation"
+                image="/placeholder.svg"
+                bgGradient="from-purple-500/20 to-pink-500/10"
+                href="/products?category=Laptops"
+              />
+              <ImageShowcaseCard
+                title="Premium Audio"
+                description="Crystal clear sound with noise cancellation"
+                image="/placeholder.svg"
+                bgGradient="from-green-500/20 to-emerald-500/10"
+                href="/products?category=Headphones"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-foreground mb-3">Why Choose ElectroStore</h2>
+              <p className="text-muted-foreground text-lg">Industry-leading service and quality</p>
+            </div>
+
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+              <FeatureShowcase
+                icon={<Truck className="h-8 w-8" />}
+                title="Free Shipping"
+                description="On all orders over $199"
+                bgColor="bg-gradient-to-br from-blue-500/10 to-blue-600/5"
+              />
+              <FeatureShowcase
+                icon={<ShieldCheck className="h-8 w-8" />}
+                title="100% Secure"
+                description="Protected transactions always"
+                bgColor="bg-gradient-to-br from-green-500/10 to-green-600/5"
+              />
+              <FeatureShowcase
+                icon={<Headset className="h-8 w-8" />}
+                title="Expert Support"
+                description="24/7 customer service team"
+                bgColor="bg-gradient-to-br from-purple-500/10 to-purple-600/5"
+              />
+              <FeatureShowcase
+                icon={<Sparkles className="h-8 w-8" />}
+                title="Best Prices"
+                description="Guaranteed lowest prices"
+                bgColor="bg-gradient-to-br from-orange-500/10 to-orange-600/5"
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-3xl mx-4 md:mx-auto md:container">
+          <div className="container mx-auto px-4">
+            <div className="grid gap-12 md:grid-cols-2 items-center">
+              <div className="space-y-6">
+                <h2 className="text-4xl font-bold leading-tight">Tech That Matters</h2>
+                <p className="text-lg text-white/80">
+                  From cutting-edge smartphones to powerful laptops, we bring you the latest innovations in electronics. 
+                  Every product is carefully selected and tested for quality.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    <span>Premium Quality</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    <span>Best Warranties</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    <span>Expert Service</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary"></div>
+                    <span>Great Prices</span>
+                  </div>
+                </div>
+                <Link href="/products">
+                  <Button className="h-12 px-8 rounded-full bg-white text-slate-900 hover:bg-white/90 font-semibold">
+                    Explore Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+              <div className="relative h-80 hidden md:block">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-2xl blur-3xl"></div>
+                <Image
+                  src="/iPhone_16_Pro_Max_Natural_Titanium.webp"
+                  alt="Featured tech"
+                  fill
+                  className="object-contain drop-shadow-2xl relative z-10"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-10">
