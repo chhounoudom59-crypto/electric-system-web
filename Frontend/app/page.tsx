@@ -521,3 +521,63 @@ function PromoCard({ title, subtitle, description, icon, color, href }: PromoCar
     </Link>
   )
 }
+
+type ImageShowcaseCardProps = {
+  title: string
+  description: string
+  image: string
+  bgGradient: string
+  href: string
+}
+
+function ImageShowcaseCard({ title, description, image, bgGradient, href }: ImageShowcaseCardProps) {
+  return (
+    <Link href={href}>
+      <Card className={`group overflow-hidden border-0 cursor-pointer h-80 bg-gradient-to-br ${bgGradient} hover-lift relative`}>
+        <CardContent className="h-full p-8 flex flex-col justify-between relative z-10">
+          <div className="space-y-2">
+            <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">{title}</h3>
+            <p className="text-sm text-muted-foreground">{description}</p>
+          </div>
+          <Button variant="outline" className="w-fit rounded-full gap-2">
+            Shop Now
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </CardContent>
+        <div className="absolute -right-10 -bottom-10 w-64 h-64 opacity-20 group-hover:opacity-30 transition-opacity">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-contain drop-shadow-xl"
+          />
+        </div>
+      </Card>
+    </Link>
+  )
+}
+
+type FeatureShowcaseProps = {
+  icon: React.ReactNode
+  title: string
+  description: string
+  bgColor: string
+}
+
+function FeatureShowcase({ icon, title, description, bgColor }: FeatureShowcaseProps) {
+  return (
+    <Card className={`border-0 ${bgColor} hover-lift cursor-pointer`}>
+      <CardContent className="p-8 text-center space-y-4">
+        <div className="flex justify-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            {icon}
+          </div>
+        </div>
+        <div>
+          <h3 className="font-bold text-lg text-foreground mb-1">{title}</h3>
+          <p className="text-sm text-muted-foreground">{description}</p>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
