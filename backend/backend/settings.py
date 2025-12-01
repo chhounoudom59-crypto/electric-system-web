@@ -122,6 +122,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Email settings (for sending OTP via email)
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "your_real_gmail@gmail.com"        # the account you created app password for
+EMAIL_HOST_PASSWORD = "16_character_app_password"    # paste App Password here
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Internationalization
+# https://docs.djangoproject.com/en/5.2/topics/i18n/
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 

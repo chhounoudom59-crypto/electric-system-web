@@ -13,6 +13,7 @@ import { OtpVerification } from "./otp-verification"
 export function RegisterForm() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000"
   const [step, setStep] = useState<"phone" | "otp" | "details">("phone")
+  const [deliveryMethod, setDeliveryMethod] = useState<"sms" | "email">("sms")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -23,18 +24,32 @@ export function RegisterForm() {
     setLoading(true)
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/auth/request-phone-otp/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone_number: phoneNumber,
-          purpose: "REGISTER",
-        }),
-      })
-
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.detail || "Failed to send OTP")
+      if (deliveryMethod === "sms") {
+        const res = await fetch(`${API_BASE_URL}/api/users/auth/request-phone-otp/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone_number: phoneNumber,
+            purpose: "REGISTER",
+          }),
+        })
+        if (!res.ok) {
+          const data = await res.json()
+          throw new Error(data.detail || "Failed to send OTP")
+        }
+      } else {
+        const res = await fetch(`${API_BASE_URL}/api/users/auth/request-otp/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            purpose: "REGISTER",
+          }),
+        })
+        if (!res.ok) {
+          const data = await res.json()
+          throw new Error(data.detail || "Failed to send OTP")
+        }
       }
 
       setStep("otp")
@@ -50,15 +65,31 @@ export function RegisterForm() {
     setLoading(true)
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/auth/verify-phone-otp/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone_number: phoneNumber,
-          code: otp,
-          purpose: "REGISTER",
-        }),
-      })
+      let res: Response
+
+      if (deliveryMethod === "sms") {
+        res = await fetch(`${API_BASE_URL}/api/users/auth/verify-phone-otp/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone_number: phoneNumber,
+            code: otp,
+            purpose: "REGISTER",
+          }),
+        })
+      } else {
+        res = await fetch(`${API_BASE_URL}/api/users/auth/verify-otp/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            code: otp,
+            purpose: "REGISTER",
+            full_name: "", // or use name if you already asked for it
+            address_line1: "",
+          }),
+        })
+      }
 
       if (!res.ok) {
         const data = await res.json()
@@ -66,11 +97,9 @@ export function RegisterForm() {
       }
 
       const data = await res.json()
-      // Save tokens to local storage
       localStorage.setItem("accessToken", data.access)
       localStorage.setItem("refreshToken", data.refresh)
-      
-      // If profile creation is part of registration, move to details step
+
       setStep("details")
     } catch (error: any) {
       console.error(error)
@@ -85,13 +114,12 @@ export function RegisterForm() {
     setLoading(true)
 
     try {
-      // Update profile with full name
       const token = localStorage.getItem("accessToken")
       const res = await fetch(`${API_BASE_URL}/api/users/profile/`, {
         method: "PATCH",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}` 
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           full_name: name,
@@ -104,24 +132,28 @@ export function RegisterForm() {
 
       window.location.href = "/profile"
     } catch (error: any) {
-        console.error(error)
-        alert(error.message)
+      console.error(error)
+      alert(error.message)
     } finally {
-        setLoading(false)
+      setLoading(false)
     }
   }
 
+  // Step 2: OTP verification
   if (step === "otp") {
     return (
       <OtpVerification
         phoneNumber={phoneNumber}
+        email={email}
+        deliveryMethod={deliveryMethod}
         onVerify={handleVerifyOtp}
-        onResend={() => console.log("[v0] Resending OTP")}
+        onResend={handleSendOtp}
         loading={loading}
       />
     )
   }
 
+  // Step 3: Complete profile
   if (step === "details") {
     return (
       <Card className="border-border bg-card">
@@ -169,14 +201,16 @@ export function RegisterForm() {
     )
   }
 
+  // Step 1: initial register (phone + SMS/email choice)
   return (
     <Card className="border-border bg-card">
       <CardHeader>
-        <CardTitle className="text-card-foreground">Register with Phone</CardTitle>
+        <CardTitle className="text-card-foreground">Register</CardTitle>
         <CardDescription>{"We'll send you a verification code"}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSendOtp} className="space-y-4">
+          {/* Phone number field (always required) */}
           <div className="space-y-2">
             <Label htmlFor="phone" className="text-card-foreground">
               Phone Number
@@ -193,10 +227,64 @@ export function RegisterForm() {
                 required
               />
             </div>
-            <p className="text-xs text-muted-foreground">Enter your phone number with country code</p>
+            <p className="text-xs text-muted-foreground">
+              Enter your phone number with country code
+            </p>
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading || !phoneNumber}>
+          {/* Delivery method selector */}
+          <div className="space-y-2">
+            <Label className="text-card-foreground">Receive code via</Label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  value="sms"
+                  checked={deliveryMethod === "sms"}
+                  onChange={() => setDeliveryMethod("sms")}
+                />
+                SMS
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  value="email"
+                  checked={deliveryMethod === "email"}
+                  onChange={() => setDeliveryMethod("email")}
+                />
+                Email
+              </label>
+            </div>
+          </div>
+
+          {/* Email field only when email delivery selected */}
+          {deliveryMethod === "email" && (
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-card-foreground">
+                Email Address
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="bg-background text-foreground"
+              />
+            </div>
+          )}
+
+          {/* Submit button */}
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={
+              loading ||
+              !phoneNumber ||
+              (deliveryMethod === "email" && !email)
+            }
+          >
             {loading ? "Sending Code..." : "Send Verification Code"}
           </Button>
 

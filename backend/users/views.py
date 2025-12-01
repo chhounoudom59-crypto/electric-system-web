@@ -6,6 +6,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import status, permissions
 from rest_framework.response import Response
+from django.core.mail import send_mail
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -24,9 +25,12 @@ User = get_user_model()
 
 
 def send_otp_via_email(email: str, code: str):
-    # TODO: integrate with real email service
-    print(f"[DEV] OTP for {email}: {code}")
+    subject = "Your verification code"
+    message = f"Your 6-digit verification code is {code}. It will expire in 10 minutes."
+    from_email = None  # uses DEFAULT_FROM_EMAIL from settings
+    recipient_list = [email]
 
+    send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
 def send_otp_via_sms(phone_number: str, code: str):
     # TODO: integrate with ABA PayWay / SmartBiz SMS gateway
